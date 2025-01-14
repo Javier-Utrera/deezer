@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-### Compile and Minify for Production
+### Compile and Minify for Productiona
 
 ```sh
 npm run build
