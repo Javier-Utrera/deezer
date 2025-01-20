@@ -14,7 +14,7 @@
   
   <script setup>
   import { computed } from 'vue';
-  import { useUserStore } from '../stores/email';
+  import { useUserStore } from '../stores/counter';
   
   // Accede a la store
   const userStore = useUserStore();

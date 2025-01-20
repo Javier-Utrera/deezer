@@ -12,48 +12,61 @@
     </p>
   </div>
   <div class="row">
-    <div class="col-md-6"><h1>Bootstrap Icons</h1>
-    <p>Bootstrap Icons es una biblioteca de iconos creada por el equipo de Bootstrap. Proporciona una colección de iconos SVG gratuitos y de código abierto que se pueden utilizar fácilmente en proyectos web.</p>
-    <p class="text-bg-light p-3 border" >
-  <i class="bi bi-alarm" style="font-size: 2rem; color: cornflowerblue;"></i> 
-  <code> &lt;i class="bi bi-alarm" style="font-size: 2rem; color: cornflowerblue;"&gt;&lt;/i&gt;</code>
-  <br>
-  <i class="bi bi-battery-half" style="font-size: 2rem; color: darkorange;"></i> 
-  <code> &lt;i class="bi bi-battery-half" style="font-size: 2rem; color: darkorange;"&gt;&lt;/i&gt;</code>
-  <br>
-  <i class="bi bi-cloud-sun" style="font-size: 2rem; color: gold;"></i> 
-  <code> &lt;i class="bi bi-cloud-sun" style="font-size: 2rem; color: gold;"&gt;&lt;/i&gt;</code>
-  <br>
-  <i class="bi bi-emoji-smile" style="font-size: 2rem; color: green;"></i> 
-  <code> &lt;i class="bi bi-emoji-smile" style="font-size: 2rem; color: green;"&gt;&lt;/i&gt;</code>
+    <div class="col-md-6">
+      <h1>Bootstrap Icons</h1>
+      <p>Bootstrap Icons es una biblioteca de iconos creada por el equipo de Bootstrap. Proporciona una colección de
+        iconos SVG gratuitos y de código abierto que se pueden utilizar fácilmente en proyectos web.</p>
+      <p class="text-bg-light p-3 border">
+        <i class="bi bi-alarm" style="font-size: 2rem; color: cornflowerblue;"></i>
+        <code> &lt;i class="bi bi-alarm" style="font-size: 2rem; color: cornflowerblue;"&gt;&lt;/i&gt;</code>
+        <br>
+        <i class="bi bi-battery-half" style="font-size: 2rem; color: darkorange;"></i>
+        <code> &lt;i class="bi bi-battery-half" style="font-size: 2rem; color: darkorange;"&gt;&lt;/i&gt;</code>
+        <br>
+        <i class="bi bi-cloud-sun" style="font-size: 2rem; color: gold;"></i>
+        <code> &lt;i class="bi bi-cloud-sun" style="font-size: 2rem; color: gold;"&gt;&lt;/i&gt;</code>
+        <br>
+        <i class="bi bi-emoji-smile" style="font-size: 2rem; color: green;"></i>
+        <code> &lt;i class="bi bi-emoji-smile" style="font-size: 2rem; color: green;"&gt;&lt;/i&gt;</code>
       <p>Puedes encontrar la lista completa de iconos en <a href="https://icons.getbootstrap.com/">su web oficial.</a>
       </p>
-    </p>
-  </div>
+      </p>
+    </div>
     <div class="col-md-6 sass-example">
       <h1>SASS</h1>
-      <p>SASS (Syntactically Awesome Stylesheets) es un preprocesador de CSS que permite escribir hojas de estilo de una manera más eficiente y organizada.</p>
-      <p>Este proyecto ya viene configurado con SASS, por lo que puedes empezar a utilizarlo en tus estilos de inmediato.</p>
+      <p>SASS (Syntactically Awesome Stylesheets) es un preprocesador de CSS que permite escribir hojas de estilo de una
+        manera más eficiente y organizada.</p>
+      <p>Este proyecto ya viene configurado con SASS, por lo que puedes empezar a utilizarlo en tus estilos de
+        inmediato.</p>
       <p class="psass">
-    SASS  es un preprocesador CSS que agrega características como:
-    <ul>
-      <li>Anidación de estilos</li>
-      <li>Variables</li>
-      <li>Mixins</li>
-      <li>Herencia</li>
-    </ul>
-    Todo esto mejora la mantenibilidad del código CSS.
-  </p>
+        SASS es un preprocesador CSS que agrega características como:
+      <ul>
+        <li>Anidación de estilos</li>
+        <li>Variables</li>
+        <li>Mixins</li>
+        <li>Herencia</li>
+      </ul>
+      Todo esto mejora la mantenibilidad del código CSS.
+      </p>
     </div>
   </div>
+  <!-- Barra -->
+  <SearchBar/>
+  <!-- CARRUSEL -->
+  <carrusel/>
+
 </template>
 
-<script setup></script>
+<script setup>
+import carrusel from "../components/carrusel.vue";
+import SearchBar from "../components/SearchBar.vue";
+</script>
 
 <style scoped>
 h1 {
   color: #007bff;
 }
+
 .sass-example {
   .psass {
     font-size: 16px;
@@ -74,12 +87,11 @@ h1 {
         font-weight: bold;
 
         &:hover {
-          color: #007bff; 
+          color: #007bff;
           text-decoration: underline;
         }
       }
     }
   }
 }
-
 </style>
