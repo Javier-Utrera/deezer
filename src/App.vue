@@ -12,7 +12,7 @@ import Menu from "./components/menu.vue";
         <h1>Deezer Music Client</h1>
       </div>
     </header>
-
+ 
     <!-- Menu -->
     <Menu />
 
@@ -34,22 +34,22 @@ import Menu from "./components/menu.vue";
 
 
 <style lang="scss">
-nav{
+nav {
   border: 1px solid gray;
 }
+
 $hover-bg-color: #007bff;
 $hover-text-color: #ffffff;
+
 li {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 
-    &:hover {
-      background-color: $hover-bg-color;
-      color: $hover-text-color;
-      font-weight: bold;
-    }
+  &:hover {
+    background-color: $hover-bg-color;
+    color: $hover-text-color;
+    font-weight: bold;
   }
-
-
+}
 </style>

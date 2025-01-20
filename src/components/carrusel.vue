@@ -1,44 +1,34 @@
 <template>
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <!-- <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li> -->
-        </ol>
-        <div class="carousel-inner">
-            <!-- <div class="carousel-item active">
-                <img class="d-block w-100" src="..." alt="First slide">
+    <div id="carouselExampleIndicators" class="carousel slide d-block w-50 mx-auto" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div v-for="(cancion, index) in canciones" :key="index" :class="['carousel-item', { active: index === 0 }]">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Cancion: {{ cancion.title}}</h5>
+                <p>Album: {{ cancion.album.title }}</p>
             </div>
-            <div class="carousel-item">
-                <img class="d-block w-100" src="..." alt="Second slide">
-            </div>
-            <div class="carousel-item">
-                <img class="d-block w-100" src="..." alt="Third slide">
-            </div> -->
+          <img :src="cancion.album.cover_big" class="d-block w-100"/>
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
     </div>
-</template>
-<script setup>
-import { RouterLink } from 'vue-router'
-import { ref } from "vue";
-const searchDeezer = async () => {
-    const response = await fetch(`https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=eminem`);
-    const data = await response.json();
-    // emit("results", data.data); // Emitimos los resultados al componente padre
-};
-var mostrar = ()=>{
-    [...data].forEach(cancion=>{
-        var indicacion = document.getElementsByName("carousel-indicators")[0]
-        var indicacion = document.getElementsByName("carousel-inner")[0]
-
-    })
-}
-</script>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue';
+  
+  const canciones = ref([]);
+  
+  const searchDeezer = async () => {
+      const llamada = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/chart');
+      const datos = await llamada.json();
+      canciones.value = datos.tracks.data;
+  };
+  onMounted(searchDeezer);
+  </script>
