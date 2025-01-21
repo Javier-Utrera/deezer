@@ -39,19 +39,19 @@
       <p>Este proyecto ya viene configurado con SASS, por lo que puedes empezar a utilizarlo en tus estilos de
         inmediato.</p>
       <p class="psass">
-        SASS es un preprocesador CSS que agrega características como:
+        SASS es un preprocesador CSS que agrega características como:</p>
       <ul>
         <li>Anidación de estilos</li>
         <li>Variables</li>
         <li>Mixins</li>
         <li>Herencia</li>
       </ul>
-      Todo esto mejora la mantenibilidad del código CSS.
-      </p>
     </div>
   </div>
+  
   <!-- Barra -->
   <SearchBar/>
+
   <!-- CARRUSEL -->
   <carrusel/>
 

@@ -1,25 +1,48 @@
 <template>
   <div>
     <h1>Búsqueda de canciones en Deezer</h1>
+    <label for="explicitas">Ocultar letras explicitas:</label>
+    <input type="checkbox" v-model="explicito" id="explicitas" name="explicitas" ><br><br>
+    <label for="duracion">Duracion minima</label>
+    <input type="number" v-model="duracion" id="duracion" name="duracion" ><br><br>
     <!-- Componente hijo -->
     <SearchBar @results="handleResults" />
     <!-- Lista de canciones -->
     <ul v-if="songs.length > 0">
-      <li v-for="song in songs" :key="song.id">
+      <li v-for="song in filtrocomputado" :key="song.id">
         <strong>{{ song.title }}</strong> - {{ song.artist.name }} - {{ song.album.title }} - {{ song.duration }}
       </li>
     </ul>
     <p v-else>No hay resultados para mostrar</p>
   </div>
 </template>
+
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import SearchBar from "../components/SearchBar.vue"; // Importa el componente hijo
-const songs = ref([]); // Estado para almacenar la lista de canciones
+const songs = ref([]);
 // Maneja los resultados emitidos por el componente hijo
 const handleResults = (data) => {
-  songs.value = data; // Actualiza la lista de canciones
+  songs.value = data;  
 };
+
+var explicito = ref(false);
+var duracion = ref(0);
+
+var filtrocomputado = computed(()=>{
+
+  var canciones = [...songs.value]
+
+  if(explicito.value)
+    canciones = canciones.filter((cancion)=>cancion.explicit_lyrics === false)
+
+  if(duracion.value){
+    canciones = canciones.filter((cancion)=>cancion.duration>=duracion.value)
+  }
+  
+  return canciones;
+
+})
 </script>
 
 

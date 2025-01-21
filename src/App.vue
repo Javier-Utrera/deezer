@@ -1,9 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import Menu from "./components/menu.vue";
-
-</script>
-
 <template>
   <div id="app">
     <!-- Header -->
@@ -14,7 +8,7 @@ import Menu from "./components/menu.vue";
     </header>
  
     <!-- Menu -->
-    <Menu />
+    <Menu/>
 
     <!-- Main Content -->
     <main class="container my-4">
@@ -29,7 +23,8 @@ import Menu from "./components/menu.vue";
 </template>
 
 <script setup>
-
+import { RouterLink, RouterView } from 'vue-router'
+import Menu from "./components/menu.vue";
 </script>
 
 

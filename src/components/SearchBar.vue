@@ -8,6 +8,7 @@
         </div>
     </div>
 </template>
+
 <script setup>
 import { RouterLink } from 'vue-router'
 import { ref } from "vue";
@@ -32,6 +33,7 @@ const searchDeezer = async () => {
 // Define la función para emitir eventos
 const emit = defineEmits(["results"]);
 </script>
+
 <style scoped>
 .search-container {
     display: flex;
