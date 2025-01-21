@@ -9,7 +9,7 @@
     <SearchBar @results="handleResults" />
     <!-- Lista de canciones -->
     <ul v-if="songs.length > 0">
-      <li v-for="song in filtrocomputado" :key="song.id">
+      <li v-for="song in filtrocomputado" :key="song.id" @click="">
         <strong>{{ song.title }}</strong> - {{ song.artist.name }} - {{ song.album.title }} - {{ song.duration }}
       </li>
     </ul>
