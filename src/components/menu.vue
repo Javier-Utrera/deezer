@@ -1,34 +1,75 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container">
-        
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">Home</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/playlists">Playlists</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/search">Buscador</router-link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+  <nav :class="['sidebar', { 'collapsed': !isOpen }]">
+    <ul>
+      <li>
+        <router-link to="/" class="nav-link">
+          <i class="fas fa-home"></i> Inicio
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/playlists" class="nav-link">
+          <i class="fas fa-music"></i> Playlists
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/search" class="nav-link">
+          <i class="fas fa-search"></i> Buscador
+        </router-link>
+      </li>
+    </ul>
+  </nav>
 </template>
+
 <script setup>
-import { RouterLink } from 'vue-router'
+defineProps({
+  isOpen: Boolean
+});
 </script>
+
+<style scoped>
+/* Estilos del menú lateral */
+.sidebar {
+  width: 150px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+/* Cuando el menú está oculto */
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 100px;
+}
+
+.sidebar li {
+  width: 100%;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+}
+.nav-link i{
+  margin-right: 10px;  
+}
+</style>

@@ -21,7 +21,7 @@
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
-/* semantic color variables for this project */
+/* Semantic color variables for this project */
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
@@ -50,6 +50,7 @@
   }
 }
 
+/* Reset básico */
 *,
 *::before,
 *::after {
@@ -58,8 +59,17 @@
   font-weight: normal;
 }
 
+/* Ajuste del html y body */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Estilo del body */
 body {
-  min-height: 100vh;
+  min-height: 100vh; /* Garantiza que el body ocupe toda la pantalla */
   color: var(--color-text);
   background: var(--color-background);
   transition:
@@ -83,4 +93,50 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ajuste del contenedor principal de la app */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+/* Estilos para el layout del menú y contenido */
+.layout {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* Ajuste del menú */
+.sidebar {
+  width: 250px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Cuando el menú está colapsado */
+.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+/* Contenido principal */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  margin-left: 250px; /* Espacio para el menú cuando está abierto */
+  width: calc(100% - 250px); /* Ajuste cuando el menú está visible */
+}
+
+/* Expansión del contenido cuando el menú está colapsado */
+.main-content.expanded {
+  margin-left: 0;
+  width: 100%;
 }

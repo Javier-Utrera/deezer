@@ -38,7 +38,6 @@ const emit = defineEmits(["results"]);
 .search-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
 }
 
 .search-input {
