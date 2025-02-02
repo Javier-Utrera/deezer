@@ -1,5 +1,6 @@
 <template>
   <div id="carouselExampleIndicators" class="carousel slide custom-carousel mx-auto" data-bs-ride="carousel">
+    <h2 class="text-center mb-4">Top 10 Canciones Más Escuchadas</h2>
     <div class="carousel-inner">
       <div v-for="(album, index) in albunes" :key="index" :class="['carousel-item', { active: index === 0 }]">
         <div class="carousel-caption d-none d-md-block">

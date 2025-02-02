@@ -15,10 +15,6 @@
       </main>
     </div>
 
-    <!-- Footer (sin cambios de tamaño) -->
-    <footer class="footer">
-      <p>&copy; 2024 Deezer Music Client. Todos los derechos reservados.</p>
-    </footer>
   </div>
 </template>
 
@@ -36,10 +32,10 @@ const toggleMenu = () => {
 <style lang="scss">
 /* Fondo de la aplicación */
 #app {
-  background: radial-gradient(circle at top, #2e2d2d 20%, #000000 100%);
-  min-height: 100vh;
+  background: radial-gradient(circle at top, #333333 20%, #000000 100%);
   width: 100vw;
   color: white;
+  position: relative; /* Para asegurar la correcta aplicación del filtro */
 }
 
 /* Contenedor general */
@@ -75,11 +71,6 @@ const toggleMenu = () => {
   padding: 20px;
 }
 
-/* Footer */
-.footer {
-  background: #222;
-  color: white;
-  text-align: center;
-  padding: 15px;
-}
+
+
 </style>
