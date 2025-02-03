@@ -11,43 +11,54 @@
 
       <!-- Contenido principal -->
       <main class="main-content">
-        <router-view/>
+        <router-view />
       </main>
     </div>
+
+    <MusicPlayer/>
   </div>
 </template>
 
 <script setup>
-import { ref} from "vue";
+import { ref } from "vue";
 import Menu from "./components/Menu.vue";
+import MusicPlayer from "@/components/MusicPlayer.vue";
 
 const isMenuOpen = ref(true);
-
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 </script>
 
 <style lang="scss">
+/* 🔹 Asegurar que la app ocupa toda la pantalla */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
 
-/* Contenedor principal con capa de fondo */
+/* 🔹 Contenedor principal */
 #app {
   background: radial-gradient(circle at top, #333 20%, #000 100%);
-  position: relative;
-  width: 100vw;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   color: white;
   overflow-x: hidden;
 }
 
-/* Layout */
+/* 🔹 Layout flexible */
 .layout {
   display: flex;
   flex-direction: column;
+  width: 100%;
   min-height: 100vh;
+  padding-bottom: 60px; /* 🔥 Espacio reservado para el reproductor */
 }
 
-/* Botón de menú */
+/* 🔹 Botón de menú */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -67,9 +78,27 @@ const toggleMenu = () => {
   background: #0056b3;
 }
 
-/* Contenido principal */
+/* 🔹 Contenido principal */
 .main-content {
   flex-grow: 1;
-  padding: 20px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+/* 🔹 Estilos del Reproductor */
+.music-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #111;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* Asegura que está encima de otros elementos */
 }
 </style>

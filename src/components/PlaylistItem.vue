@@ -8,7 +8,6 @@
             <h5 class="mb-1 fw-bold text-light">{{ song.title }}</h5>
             <p class="mb-0 text-muted">{{ song.artist.name }}</p>
         </div>
-
         <!-- Botón de eliminación -->
         <button class="btn btn-outline-danger rounded-circle" @click="$emit('remove', song.id)">
             <i class="bi bi-trash3-fill"></i>

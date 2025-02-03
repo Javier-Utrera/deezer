@@ -1,29 +1,27 @@
 <template>
   <div class="container mt-4">
     <h2 class="text-center mb-4">Resultados de búsqueda</h2>
-    <SearchBar @updateResults="actualizarResultados" />
+    <SearchBar />
     <SearchResults :tracks="tracks" :albums="albums" :artists="artists" />
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { computed, onMounted } from "vue";
+import { useSearchStore } from "@/stores/searchStore";
 import SearchBar from "@/components/SearchBar.vue";
 import SearchResults from "@/components/SearchResults.vue";
 
-const tracks = ref([]);
-const albums = ref([]);
-const artists = ref([]);
+const searchStore = useSearchStore();
 
-const actualizarResultados = (resultados) => {
-  tracks.value = resultados.tracks;
-  albums.value = resultados.albums;
-  artists.value = resultados.artists;
-};
-// Verificar que se reciben los datos correctamente
-watchEffect(() => {
-  console.log("Tracks:", tracks.value);
-  console.log("Albums:", albums.value);
-  console.log("Artists:", artists.value);
+const tracks = computed(() => searchStore.tracks);
+const albums = computed(() => searchStore.albums);
+const artists = computed(() => searchStore.artists);
+
+onMounted(() => {
+  if (searchStore.searchQuery) {
+    console.log("Ejecutando búsqueda automática con:", searchStore.searchQuery);
+    searchStore.fetchResults(); // 🔥 Ejecutar la búsqueda desde Pinia
+  }
 });
 </script>
