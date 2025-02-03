@@ -9,17 +9,16 @@
       <!-- Menú -->
       <Menu :isOpen="isMenuOpen" />
 
-      <!-- Contenido principal (sin cambios de tamaño) -->
+      <!-- Contenido principal -->
       <main class="main-content">
-        <router-view />
+        <router-view/>
       </main>
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref} from "vue";
 import Menu from "./components/Menu.vue";
 
 const isMenuOpen = ref(true);
@@ -30,22 +29,25 @@ const toggleMenu = () => {
 </script>
 
 <style lang="scss">
-/* Fondo de la aplicación */
+
+/* Contenedor principal con capa de fondo */
 #app {
-  background: radial-gradient(circle at top, #333333 20%, #000000 100%);
+  background: radial-gradient(circle at top, #333 20%, #000 100%);
+  position: relative;
   width: 100vw;
+  min-height: 100vh;
   color: white;
-  position: relative; /* Para asegurar la correcta aplicación del filtro */
+  overflow-x: hidden;
 }
 
-/* Contenedor general */
+/* Layout */
 .layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Botón de hamburguesa en la esquina superior izquierda */
+/* Botón de menú */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -70,7 +72,4 @@ const toggleMenu = () => {
   flex-grow: 1;
   padding: 20px;
 }
-
-
-
 </style>
