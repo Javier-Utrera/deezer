@@ -16,7 +16,7 @@ const routes = [
     component: PlaylistsView,
   },
   {
-    path: '/search',
+    path: '/search/',
     name: 'Buscador',
     component: SearchView,
   },

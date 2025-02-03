@@ -35,7 +35,7 @@ const srcimagen = ref('');
 const emit = defineEmits(["updateImage"]); 
 
 const searchDeezer = async () => {
-  const llamada = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/chart');
+  const llamada = await fetch('http://localhost:8080/https://api.deezer.com/chart');
   const datos = await llamada.json();
   albunes.value = datos.artists.data;
   

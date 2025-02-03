@@ -1,35 +1,29 @@
 <template>
-    <div class="search-container">
-      <div class="search-input">
-        <input
-          type="text"
-          v-model="searchQuery"
-          @keyup.enter="handleSearch"
-          placeholder="Buscar en Deezer..."
-          aria-label="Buscar en Deezer"
-        />
-        <button @click="handleSearch" aria-label="Buscar">
-          <i class="bi bi-search"></i> <!-- Ícono de Bootstrap -->
-        </button>
-      </div>
+  <div class="search-container">
+    <div class="search-input">
+      <input type="text" v-model="searchQuery" @keyup.enter="handleSearch" placeholder="Buscar en Deezer..."
+        aria-label="Buscar en Deezer" />
+      <button @click="handleSearch" aria-label="Buscar">
+        <i class="bi bi-search"></i> <!-- Ícono de Bootstrap -->
+      </button>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  
-  const searchQuery = ref("");
-  const emit = defineEmits(["updateResults"]);
-  const router = useRouter();
-  const route = useRoute();
-  
-  const handleSearch = async () => {
-  if (searchQuery.value.trim() === "") return;
+  </div>
+</template>
 
+<script setup>
+import { ref,onMounted  } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+var searchQuery = ref("");
+const emit = defineEmits(["updateResults"]);
+const router = useRouter();
+const route = useRoute();
+
+const handleSearch = async () => {
+  if (searchQuery.value.trim() === "") return;
   try {
     const searchParam = encodeURIComponent(searchQuery.value);
-    const baseURL = "https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=";
+    const baseURL = "http://localhost:8080/https://api.deezer.com/search?q=";
 
     // Hacer las peticiones con retraso para evitar bloqueos
     const fetchWithDelay = (url, delay) =>
@@ -58,7 +52,7 @@
     const extractedAlbums = (albumsData.data || []).map(track => track.album);
     const uniqueAlbums = extractedAlbums
       .filter(album => album && album.title?.toLowerCase().includes(searchText)) // Filtra por el título del álbum
-      .filter((album, index, self) => 
+      .filter((album, index, self) =>
         index === self.findIndex(a => a.id === album.id) // Elimina duplicados
       );
 
@@ -66,7 +60,7 @@
     const extractedArtists = (artistsData.data || []).map(track => track.artist);
     const uniqueArtists = extractedArtists
       .filter(artist => artist && artist.name?.toLowerCase().includes(searchText)) // Filtra por nombre del artista
-      .filter((artist, index, self) => 
+      .filter((artist, index, self) =>
         index === self.findIndex(a => a.id === artist.id) // Elimina duplicados
       );
 
@@ -86,53 +80,61 @@
   }
 };
 
+onMounted(()=>{
+  if(!searchQuery.value){
+    searchQuery.value = route.fullPath.split('=')[1];
+    if(searchQuery.value){
+      handleSearch();
+    }
+  }
+});
 
 
-  </script>
-  
-  <style scoped>
-  /* Contenedor de la barra de búsqueda */
-  .search-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  
-  /* Estilos del input y botón */
-  .search-input {
-    width: 90%;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    padding: 0;
-  }
-  
-  /* Estilos del campo de búsqueda */
-  .search-input input {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px 0 0 5px;
-  }
-  
-  /* Estilos del botón de búsqueda */
-  .search-input button {
-    border: none;
-    background-color: transparent;
-    padding: 0 10px;
-    cursor: pointer;
-    color: #777;
-    font-size: 20px;
-    transition: color 0.3s;
-  }
-  
-  .search-input button:hover {
-    color: #000;
-  }
-  </style>
-  
+
+</script>
+
+<style scoped>
+/* Contenedor de la barra de búsqueda */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Estilos del input y botón */
+.search-input {
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 0;
+}
+
+/* Estilos del campo de búsqueda */
+.search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px 0 0 5px;
+}
+
+/* Estilos del botón de búsqueda */
+.search-input button {
+  border: none;
+  background-color: transparent;
+  padding: 0 10px;
+  cursor: pointer;
+  color: #777;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.search-input button:hover {
+  color: #000;
+}
+</style>
