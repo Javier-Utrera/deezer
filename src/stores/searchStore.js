@@ -82,6 +82,18 @@ export const useSearchStore = defineStore("search", () => {
     }
   };
 
+  const sortResults = (type) => {
+    if (type === "alphabetical") {
+      tracks.value.sort((a, b) => a.title.localeCompare(b.title));
+      albums.value.sort((a, b) => a.title.localeCompare(b.title));
+      artists.value.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (type === "id") {
+      tracks.value.sort((a, b) => a.id - b.id);
+      albums.value.sort((a, b) => a.id - b.id);
+      artists.value.sort((a, b) => a.id - b.id);
+    }
+  };
+
   return {
     searchQuery,
     tracks,
@@ -89,6 +101,7 @@ export const useSearchStore = defineStore("search", () => {
     artists,
     setSearchQuery,
     setResults,
-    fetchResults, // 🔥 Ahora cualquier componente puede llamar a `fetchResults()`
+    fetchResults,
+    sortResults, // 🔥 Ahora cualquier componente puede llamar a `fetchResults()`
   };
 });

@@ -1,16 +1,19 @@
 <template>
   <div class="search-container">
     <div class="search-input">
-      <input
-        type="text"
-        v-model="searchQuery"
-        @keyup.enter="handleSearch"
-        placeholder="Buscar en Deezer..."
-        aria-label="Buscar en Deezer"
-      />
+      <input type="text" v-model="searchQuery" @keyup.enter="handleSearch" placeholder="Buscar en Deezer..."
+        aria-label="Buscar en Deezer" />
       <button @click="handleSearch" aria-label="Buscar">
         <i class="bi bi-search"></i> <!-- Ícono de Bootstrap -->
       </button>
+      <div class="filter-buttons">
+      <button class="btn btn-outline-light" @click="sortByAlphabetical">
+        <i class="bi bi-sort-alpha-down"></i> A-Z
+      </button>
+      <button class="btn btn-outline-light" @click="sortById">
+        <i class="bi bi-sort-numeric-down"></i> ID
+      </button>
+    </div>
     </div>
   </div>
 </template>
@@ -37,6 +40,16 @@ const handleSearch = () => {
   } else {
     searchStore.fetchResults(); // 🔥 Ahora busca directamente desde Pinia
   }
+};
+
+// 📌 **Ordenar por nombre alfabéticamente**
+const sortByAlphabetical = () => {
+  searchStore.sortResults("alphabetical");
+};
+
+// 📌 **Ordenar por ID numéricamente**
+const sortById = () => {
+  searchStore.sortResults("id");
 };
 </script>
 

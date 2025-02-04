@@ -1,7 +1,14 @@
 <template>
   <div class="card song-card">
-    <!-- Imagen del álbum -->
-    <img :src="cancion.album.cover_big" class="card-img-top" alt="Portada del álbum">
+    <!-- Imagen del álbum con icono de favorito -->
+    <div class="image-container">
+      <img :src="cancion.album.cover_big" class="card-img-top" alt="Portada del álbum">
+      
+      <!-- Botón de añadir a Playlist -->
+      <button class="favorite-btn" @click="togglePlaylist">
+        <i class="bi" :class="isInPlaylist ? 'bi-heart-fill' : 'bi-heart'"></i>
+      </button>
+    </div>
 
     <!-- Cuerpo de la card -->
     <div class="card-body text-center">
@@ -19,12 +26,6 @@
         <source :src="cancion.preview" type="audio/mpeg">
         Tu navegador no soporta audio.
       </audio>
-
-      <!-- Botón para agregar a la playlist -->
-      <button class="btn btn-outline-success btn-sm mt-2" @click="togglePlaylist">
-        <i class="bi" :class="isInPlaylist ? 'bi-heart-fill' : 'bi-heart'"></i>
-        {{ isInPlaylist ? "Eliminar de Playlist" : "Añadir a Playlist" }}
-      </button>
 
       <!-- Botón para escuchar en Deezer -->
       <a :href="cancion.link" target="_blank" class="btn btn-outline-light btn-sm mt-2">
@@ -58,7 +59,7 @@ const togglePlaylist = () => {
 </script>
 
 <style scoped>
-/* Estilo de la card */
+/* 🔹 Estilo de la card */
 .song-card {
   background: transparent;
   border: none;
@@ -70,12 +71,45 @@ const togglePlaylist = () => {
   transform: scale(1.05);
 }
 
-/* Imagen de la card */
-.card-img-top {
-  border-radius: 10px;
+/* 🔹 Contenedor de la imagen para posicionar el botón */
+.image-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Reproductor de audio */
+/* 🔹 Imagen del álbum */
+.card-img-top {
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+}
+
+/* 🔹 Botón de favorito (corazón) en la esquina superior derecha */
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+/* 🔹 Color del ícono cuando la canción está en la playlist */
+.favorite-btn .bi-heart-fill {
+  color: red;
+}
+
+.favorite-btn:hover {
+  color: red;
+}
+
+/* 🔹 Reproductor de audio */
 .audio-player {
   width: 100%;
   margin-top: 8px;

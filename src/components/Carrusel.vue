@@ -7,7 +7,7 @@
       <div class="carousel-inner">
         <div v-for="(artist, index) in artistas" :key="artist.id" :class="['carousel-item', { active: index === 0 }]">
           <div class="carousel-caption d-none d-md-block">
-            <h5>{{ artist.name }}</h5> <!-- ✅ Muestra correctamente el nombre del artista -->
+            <h5>{{ artist.name }}</h5>
           </div>
           <img :src="artist.picture_xl" class="d-block w-100 custom-img" alt="Imagen del artista" />
         </div>
@@ -39,14 +39,14 @@ const searchDeezer = async () => {
 
     // 📌 Asegurar que obtenemos los artistas
     if (datos.artists && datos.artists.data.length) {
-      artistas.value = datos.artists.data; // ✅ Ahora obtenemos correctamente los artistas
+      artistas.value = datos.artists.data;
     } else {
       console.error("No se encontraron artistas en la API de Deezer.");
     }
 
     // Si hay artistas, establecer la imagen de fondo inicial
     if (artistas.value.length > 0) {
-      srcimagen.value = artistas.value[0].picture_xl; // ✅ Usamos `picture_xl` en lugar de `cover_xl`
+      srcimagen.value = artistas.value[0].picture_xl;
       emit("updateImage", srcimagen.value);
     }
   } catch (error) {

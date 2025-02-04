@@ -29,38 +29,52 @@
             </button>
         </div>
 
-        <!-- Barra de progreso -->
+        <!-- Barra de progreso con tiempos -->
         <div class="progress-container">
-            <input type="range" min="0" :max="audio?.duration || 0" v-model="progress" @input="seek" />
+            <span class="time">{{ formatTime(progress) }}</span>
+            <input
+                type="range"
+                min="0"
+                :max="audio?.duration || 1"
+                step="0.1"
+                v-model="progress"
+                @input="seek"
+            />
+            <span class="time">{{ formatTime(audio?.duration || 0) }}</span>
         </div>
 
         <!-- Audio (oculto) -->
-        <audio ref="audio" :src="currentTrack.preview" @timeupdate="updateProgress" @ended="playNext"></audio>
+        <audio ref="audio" :src="currentTrack.preview" @loadedmetadata="setDuration" @timeupdate="updateProgress" @ended="playNext"></audio>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
 import { useFavoritesStore } from "@/stores/favorites.js";
 
 const store = useFavoritesStore();
 const audio = ref(null);
 const isPlaying = ref(false);
 const progress = ref(0);
+const duration = ref(0);
 
 // ✅ `currentTrack` es reactivo
 const currentTrack = computed(() => store.currentTrack);
 
 const togglePlay = () => {
     if (!audio.value) return;
-    isPlaying.value ? audio.value.pause() : audio.value.play();
+    if (isPlaying.value) {
+        audio.value.pause();
+    } else {
+        audio.value.play();
+    }
     isPlaying.value = !isPlaying.value;
 };
 
 const playNext = () => {
     store.playNext();
     isPlaying.value = false;
-    setTimeout(() => audio.value.play(), 100);
+    setTimeout(() => audio.value?.play(), 100);
 };
 
 const playPrev = () => {
@@ -68,16 +82,25 @@ const playPrev = () => {
     if (currentIndex > 0) {
         store.setCurrentTrack(store.playlist[currentIndex - 1]);
         isPlaying.value = false;
-        setTimeout(() => audio.value.play(), 100);
+        setTimeout(() => audio.value?.play(), 100);
     }
 };
 
+// ✅ Asegurar que la duración se actualiza correctamente
+const setDuration = () => {
+    if (audio.value) {
+        duration.value = audio.value.duration;
+    }
+};
+
+// ✅ Actualizar la barra de progreso
 const updateProgress = () => {
     if (audio.value) {
         progress.value = audio.value.currentTime;
     }
 };
 
+// ✅ Buscar en la pista de audio
 const seek = () => {
     if (audio.value) {
         audio.value.currentTime = progress.value;
@@ -87,11 +110,13 @@ const seek = () => {
 // ✅ Detectar cambios en `currentTrack`
 watch(
     () => store.currentTrack,
-    (newTrack) => {
+    async (newTrack) => {
         if (newTrack && audio.value) {
+            await nextTick(); // Esperar a que la referencia del audio se actualice
             audio.value.load();
             audio.value.play();
             isPlaying.value = true;
+            progress.value = 0;
         }
     }
 );
@@ -124,7 +149,7 @@ const formatTime = (seconds) => {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 90px;
     background: #181818;
     color: white;
     display: flex;
@@ -132,6 +157,7 @@ const formatTime = (seconds) => {
     justify-content: space-between;
     padding: 10px 15px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
 /* 🔹 Controles de reproducción */
@@ -177,13 +203,16 @@ const formatTime = (seconds) => {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .progress-container input {
     width: 100%;
-    height: 5px;
+    height: 7px;
     cursor: pointer;
     background: transparent;
     appearance: none;
@@ -201,5 +230,12 @@ const formatTime = (seconds) => {
     background: white;
     border-radius: 50%;
     margin-top: -2px;
+}
+
+.time {
+    font-size: 12px;
+    color: white;
+    min-width: 40px;
+    text-align: center;
 }
 </style>

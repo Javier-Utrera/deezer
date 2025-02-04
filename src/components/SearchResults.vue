@@ -2,9 +2,10 @@
   <div class="container mt-4">
     <!-- Sección de Canciones -->
     <div v-show="tracks.length">
-      <h3 class="section-title">Canciones</h3>
+
       <div class="card-deck-wrapper bg-dark">
         <div class="card-deck-container">
+          <h3 class="section-title">Canciones</h3>
           <button class="btn btn-dark scroll-btn left" @click="scrollLeft('tracks')">
             <i class="bi bi-arrow-left"></i>
           </button>
@@ -22,9 +23,10 @@
 
     <!-- Sección de Álbumes -->
     <div v-show="albums.length">
-      <h3 class="section-title">Álbumes</h3>
+
       <div class="card-deck-wrapper bg-dark">
         <div class="card-deck-container">
+          <h3 class="section-title">Álbumes</h3>
           <button class="btn btn-dark scroll-btn left" @click="scrollLeft('albums')">
             <i class="bi bi-arrow-left"></i>
           </button>
@@ -42,9 +44,10 @@
 
     <!-- Sección de Artistas -->
     <div v-show="artists.length">
-      <h3 class="section-title">Artistas</h3>
+
       <div class="card-deck-wrapper bg-dark">
         <div class="card-deck-container">
+          <h3 class="section-title">Artistas</h3>
           <button class="btn btn-dark scroll-btn left" @click="scrollLeft('artists')">
             <i class="bi bi-arrow-left"></i>
           </button>
@@ -63,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps } from "vue";
+import { ref, computed, defineProps, watch } from "vue";
 import Cancion from "@/components/Cancion.vue";
 import Album from "@/components/Album.vue";
 import Artista from "@/components/Artista.vue";
@@ -74,20 +77,39 @@ const props = defineProps({
   artists: Array
 });
 
-// Número de `cards` visibles en 2 filas
+const emit = defineEmits(["updateImage"]);
+
+
+const getBackgroundImage = () => {
+  if (props.tracks.length > 0) return props.tracks[0].album.cover_big;
+  if (props.albums.length > 0) return props.albums[0].cover_big;
+  if (props.artists.length > 0) return props.artists[0].picture_big;
+  return null;
+};
+
+
+watch(() => [props.tracks, props.albums, props.artists], () => {
+  const imageSrc = getBackgroundImage();
+  console.log("Emisión de imagen de fondo:", imageSrc);
+  if (imageSrc) {
+    emit("updateImage", imageSrc);
+  }
+}, { deep: true });
+
+
 const cardsPerPage = 8;
 
-// Índices de paginación
+
 const trackIndex = ref(0);
 const albumIndex = ref(0);
 const artistIndex = ref(0);
 
-// Obtener las páginas actuales de `cards`
+
 const paginatedTracks = computed(() => props.tracks.slice(trackIndex.value, trackIndex.value + cardsPerPage));
 const paginatedAlbums = computed(() => props.albums.slice(albumIndex.value, albumIndex.value + cardsPerPage));
 const paginatedArtists = computed(() => props.artists.slice(artistIndex.value, artistIndex.value + cardsPerPage));
 
-// Función para desplazar izquierda
+
 const scrollLeft = (type) => {
   if (type === "tracks" && trackIndex.value > 0) {
     trackIndex.value -= cardsPerPage;
@@ -100,7 +122,7 @@ const scrollLeft = (type) => {
   }
 };
 
-// Función para desplazar derecha
+
 const scrollRight = (type) => {
   if (type === "tracks" && trackIndex.value + cardsPerPage < props.tracks.length) {
     trackIndex.value += cardsPerPage;
