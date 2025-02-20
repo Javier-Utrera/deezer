@@ -1,6 +1,10 @@
 <template>
+  <!-- 🔥 Solo mostramos el contenido si el usuario está registrado -->
   <div id="app">
-    <div class="layout">
+    <!-- Modal de Bienvenida -->
+    <WelcomeModal v-if="mostrarModal" @usuarioRegistrado="handleUsuarioRegistrado" />
+
+    <div v-else class="layout">
       <!-- Botón de hamburguesa -->
       <button class="btn btn-primary menu-toggle" @click="toggleMenu">
         <i class="fas fa-bars"></i>
@@ -9,24 +13,31 @@
       <!-- Menú -->
       <Menu :isOpen="isMenuOpen" />
 
-      <!-- Contenido principal -->
+      <!-- Contenido principal con transición -->
       <main class="main-content">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </main>
     </div>
 
     <!-- Mostrar el reproductor solo si hay una canción en reproducción -->
-      <MusicPlayer />
+    <MusicPlayer v-if="currentTrack" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useFavoritesStore } from "@/stores/favorites.js";
 import Menu from "./components/Menu.vue";
 import MusicPlayer from "@/components/MusicPlayer.vue";
+import WelcomeModal from "./components/WelcomeModal.vue";
 
 const isMenuOpen = ref(true);
+const mostrarModal = ref(true); // 🔥 Controla si el modal se muestra o no
+
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
@@ -34,10 +45,22 @@ const toggleMenu = () => {
 // 📌 Importar el store de favoritos para detectar la canción en reproducción
 const store = useFavoritesStore();
 const currentTrack = computed(() => store.currentTrack);
+
+// 🔥 Comprobamos si hay usuario en localStorage al cargar la app
+onMounted(() => {
+  if (localStorage.getItem("usuario")) {
+    mostrarModal.value = false;
+  }
+});
+
+// 🔥 Manejar el evento de registro de usuario
+const handleUsuarioRegistrado = (usuario) => {
+  localStorage.setItem("usuario", JSON.stringify(usuario));
+  mostrarModal.value = false;
+};
 </script>
 
 <style lang="scss">
-
 html, body {
   margin: 0;
   padding: 0;

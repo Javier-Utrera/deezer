@@ -1,9 +1,11 @@
 <template>
+
   <div class="card song-card">
     <!-- Imagen del álbum con icono de favorito -->
     <div class="image-container">
-      <img :src="cancion.album.cover_big" class="card-img-top" alt="Portada del álbum">
-      
+      <router-link :to="'/cancion/' + cancion.id" class="text-decoration-none">
+        <img :src="cancion.album.cover_big" class="card-img-top" alt="Portada del álbum">
+      </router-link>
       <!-- Botón de añadir a Playlist -->
       <button class="favorite-btn" @click="togglePlaylist">
         <i class="bi" :class="isInPlaylist ? 'bi-heart-fill' : 'bi-heart'"></i>
@@ -33,6 +35,7 @@
       </a>
     </div>
   </div>
+
 </template>
 
 <script setup>

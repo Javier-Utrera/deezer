@@ -1,11 +1,8 @@
 <template>
+  <router-link :to="'/album/' + album.id" class="album-card">
   <div class="card album-card">
     <!-- Imagen del álbum -->
-    <img 
-      :src="album.cover_big" 
-      class="card-img-top" 
-      alt="Portada del álbum"
-    />
+    <img :src="album.cover_big" class="card-img-top" alt="Portada del álbum" />
 
     <div class="card-body text-center">
       <h5 class="card-title text-truncate" :title="album.title">
@@ -13,6 +10,7 @@
       </h5>
     </div>
   </div>
+  </router-link>
 </template>
 
 <script setup>

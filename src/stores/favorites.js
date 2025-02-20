@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { toHandlers } from "vue";
 
 export const useFavoritesStore = defineStore("favorites", {
   state: () => ({
@@ -22,8 +23,7 @@ export const useFavoritesStore = defineStore("favorites", {
           this.setCurrentTrack(song); // 🔥 Si no hay canción reproduciéndose, pon la primera
         }
       }
-    }
-    ,
+    },
 
     // 🔹 Eliminar canción de la lista
     removeSong(songId) {
@@ -33,6 +33,7 @@ export const useFavoritesStore = defineStore("favorites", {
     // 🔹 Vaciar la playlist
     clearPlaylist() {
       this.playlist = [];
+      this.currentTrack=null;
     },
 
     // 🔥 Asegurar que el estado se actualiza correctamente
@@ -50,5 +51,11 @@ export const useFavoritesStore = defineStore("favorites", {
         this.currentTrack = this.playlist[nextIndex];
       }
     },
+
+    // 🔥 Nueva función para actualizar el orden de la playlist
+    setPlaylistOrder(newOrder) {
+      this.playlist = newOrder; 
+    }
+
   },
 });

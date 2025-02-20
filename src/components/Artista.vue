@@ -1,4 +1,5 @@
 <template>
+  <router-link :to="'/artista/' + artist.id" class="text-decoration-none">
   <div v-if="artist" class="card artist-card">
     <!-- Verificar si `picture_big` existe antes de usarlo -->
     <img 
@@ -13,6 +14,7 @@
       </h5>
     </div>
   </div>
+</router-link>
 </template>
 
 <script setup>

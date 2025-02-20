@@ -1,27 +1,33 @@
 <template>
   <div class="search-container">
     <div class="search-input">
-      <input type="text" v-model="searchQuery" @keyup.enter="handleSearch" placeholder="Buscar en Deezer..."
+      <input type="text" v-model="searchQuery" placeholder="Buscar en Deezer..."
         aria-label="Buscar en Deezer" />
-      <button @click="handleSearch" aria-label="Buscar">
-        <i class="bi bi-search"></i> <!-- Ícono de Bootstrap -->
-      </button>
       <div class="filter-buttons">
-      <button class="btn btn-outline-light" @click="sortByAlphabetical">
-        <i class="bi bi-sort-alpha-down"></i> A-Z
-      </button>
-      <button class="btn btn-outline-light" @click="sortById">
-        <i class="bi bi-sort-numeric-down"></i> ID
-      </button>
-    </div>
+        <button class="btn btn-outline-light" @click="sortByAlphabetical">
+          <i class="bi bi-sort-alpha-down"></i> A-Z
+        </button>
+        <button class="btn btn-outline-light" @click="sortById">
+          <i class="bi bi-sort-numeric-down"></i> ID
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, watch, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useSearchStore } from "@/stores/searchStore";
+
+// Función de debounce sin lodash
+const debounce = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+};
 
 const router = useRouter();
 const route = useRoute();
@@ -32,15 +38,19 @@ const searchQuery = computed({
   set: (value) => searchStore.setSearchQuery(value),
 });
 
-const handleSearch = () => {
+// 📌 **Debounce para evitar múltiples llamadas a la API**
+const debouncedSearch = debounce(async () => {
   if (searchQuery.value.trim() === "") return;
-
+  await searchStore.fetchResults();
   if (route.name !== "Buscador") {
     router.push({ name: "Buscador" });
-  } else {
-    searchStore.fetchResults(); // 🔥 Ahora busca directamente desde Pinia
   }
-};
+}, 100);
+
+// 📌 **Detectar cambios en la búsqueda y aplicar debounce**
+watch(searchQuery, () => {
+  debouncedSearch();
+});
 
 // 📌 **Ordenar por nombre alfabéticamente**
 const sortByAlphabetical = () => {
@@ -52,7 +62,6 @@ const sortById = () => {
   searchStore.sortResults("id");
 };
 </script>
-
 
 <style scoped>
 /* Contenedor de la barra de búsqueda */

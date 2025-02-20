@@ -17,7 +17,6 @@ export const useSearchStore = defineStore("search", () => {
     artists.value = results.artists;
   };
 
-  // 📌 Nueva función para ejecutar la búsqueda directamente en el store
   const fetchResults = async () => {
     if (!searchQuery.value.trim()) return;
 
@@ -81,6 +80,58 @@ export const useSearchStore = defineStore("search", () => {
       console.error("Error en la búsqueda:", error.message);
     }
   };
+  
+  const fetchTrackById = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/https://api.deezer.com/track/${id}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al buscar la canción:", error);
+    }
+  };
+
+  const fetchTracksByArtist = async (artistId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/https://api.deezer.com/artist/${artistId}/top?limit=10`);
+      const data = await response.json();
+      return data.data || [];
+    } catch (error) {
+      console.error("Error al obtener canciones del artista:", error);
+      return [];
+    }
+  };
+  
+  const fetchArtistById = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/https://api.deezer.com/artist/${id}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al buscar el artista:", error);
+    }
+  };
+  
+  const fetchAlbumById = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/https://api.deezer.com/album/${id}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al buscar el álbum:", error);
+    }
+  };
+
+  const fetchAlbumsByArtist = async (artistId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/https://api.deezer.com/artist/${artistId}/albums`);
+      const data = await response.json();
+      return data.data || [];
+    } catch (error) {
+      console.error("Error al obtener álbumes del artista:", error);
+      return [];
+    }
+  };
 
   const sortResults = (type) => {
     if (type === "alphabetical") {
@@ -102,6 +153,11 @@ export const useSearchStore = defineStore("search", () => {
     setSearchQuery,
     setResults,
     fetchResults,
-    sortResults, // 🔥 Ahora cualquier componente puede llamar a `fetchResults()`
+    sortResults,
+    fetchTrackById,
+    fetchArtistById, 
+    fetchAlbumById,
+    fetchAlbumsByArtist,
+    fetchTracksByArtist
   };
 });

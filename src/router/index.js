@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue';
 import PlaylistsView from '../views/PlaylistsView.vue';
 import SearchView from '../views/SearchView.vue';
+import InfoAlbum from '../components/InfoAlbum.vue';
+import InfoCancion from '../components/InfoCancion.vue';
+import InfoArtista from '../components/InfoArtista.vue';
 
 const routes = [
   {
@@ -20,6 +23,10 @@ const routes = [
     name: 'Buscador',
     component: SearchView,
   },
+  { path: '/album/:id', component: InfoAlbum },
+  { path: '/cancion/:id', component: InfoCancion },
+  { path: '/artista/:id', component: InfoArtista },
+
 ];
 
 const router = createRouter({

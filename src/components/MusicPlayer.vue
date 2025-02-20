@@ -1,50 +1,58 @@
 <template>
-    <div v-if="currentTrack" class="music-player">
+    <div v-if="pistaActual" class="music-player">
         <!-- Controles de la izquierda -->
         <div class="player-controls">
-            <button class="btn btn-dark" @click="playPrev">
+            <button class="btn btn-dark" @click="reproducirAnterior">
                 <i class="bi bi-skip-backward-fill"></i>
             </button>
-            <button class="btn btn-dark play-btn" @click="togglePlay">
-                <i :class="isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
+            <button class="btn btn-dark play-btn" @click="alternarReproduccion">
+                <i :class="estaReproduciendo ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
             </button>
-            <button class="btn btn-dark" @click="playNext">
+            <button class="btn btn-dark" @click="reproducirSiguiente">
                 <i class="bi bi-skip-forward-fill"></i>
+            </button>
+            <button class="btn btn-dark" @click="mostrarLista = !mostrarLista">
+                <i class="bi bi-music-note-list"></i>
             </button>
         </div>
 
         <!-- Imagen de la canción en el centro -->
         <div class="track-info">
-            <img :src="currentTrack.album.cover_small" alt="Cover" class="track-cover" />
+            <img v-if="pistaActual" :src="pistaActual.album.cover_small" alt="Cover" class="track-cover" />
             <div class="track-details">
-                <h4>{{ currentTrack.title }}</h4>
-                <p>{{ currentTrack.artist.name }}</p>
+                <h4>{{ pistaActual.title }}</h4>
+                <p>{{ pistaActual.artist.name }}</p>
             </div>
-        </div>
-
-        <!-- Botón de pantalla completa a la derecha -->
-        <div class="expand-btn">
-            <button class="btn btn-dark" @click="toggleFullScreen">
-                <i class="bi bi-arrows-fullscreen"></i>
-            </button>
         </div>
 
         <!-- Barra de progreso con tiempos -->
         <div class="progress-container">
-            <span class="time">{{ formatTime(progress) }}</span>
-            <input
-                type="range"
-                min="0"
-                :max="audio?.duration || 1"
-                step="0.1"
-                v-model="progress"
-                @input="seek"
-            />
-            <span class="time">{{ formatTime(audio?.duration || 0) }}</span>
+            <span class="time">{{ formatearTiempo(progreso) }}</span>
+            <input type="range" min="0" :max="audio?.duration || 1" step="0.1" v-model="progreso"
+                @input="buscarTiempo" />
+            <span class="time">{{ formatearTiempo(audio?.duration || 0) }}</span>
+        </div>
+
+        <!-- Lista de reproducción en el reproductor -->
+        <div v-if="mostrarLista" class="playlist-container">
+            <h5>Lista de Reproducción</h5>
+            <ul>
+                <li v-for="(song, index) in store.playlist" :key="song.id"
+                    :class="{ 'playing': song.id === pistaActual.id }">
+                    <span @click="store.setCurrentTrack(song)">
+                        {{ index + 1 }}. {{ song.title }} - {{ song.artist.name }}
+                    </span>
+                    <button class="btn btn-sm btn-danger" @click="eliminarCancion(song.id)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </li>
+            </ul>
         </div>
 
         <!-- Audio (oculto) -->
-        <audio ref="audio" :src="currentTrack.preview" @loadedmetadata="setDuration" @timeupdate="updateProgress" @ended="playNext"></audio>
+        <audio ref="audio" :src="pistaActual.preview" @loadedmetadata="establecerDuracion"
+            @timeupdate="actualizarProgreso"
+            @ended="() => { reproducirSiguiente(); estaReproduciendo.value = true; }"></audio>
     </div>
 </template>
 
@@ -53,94 +61,121 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
 import { useFavoritesStore } from "@/stores/favorites.js";
 
 const store = useFavoritesStore();
+
+const eliminarCancion = (id) => {
+    store.removeSong(id);
+    if (pistaActual.value?.id === id) {
+        reproducirSiguiente();
+    }
+};
 const audio = ref(null);
-const isPlaying = ref(false);
-const progress = ref(0);
-const duration = ref(0);
+const estaReproduciendo = ref(false);
+const progreso = ref(0);
+const duracion = ref(0);
+const mostrarLista = ref(false);
 
-// ✅ `currentTrack` es reactivo
-const currentTrack = computed(() => store.currentTrack);
+const pistaActual = computed(() => store.currentTrack);
 
-const togglePlay = () => {
+const alternarReproduccion = () => {
     if (!audio.value) return;
-    if (isPlaying.value) {
+    if (estaReproduciendo.value) {
         audio.value.pause();
     } else {
         audio.value.play();
     }
-    isPlaying.value = !isPlaying.value;
+    estaReproduciendo.value = !estaReproduciendo.value;
 };
 
-const playNext = () => {
-    store.playNext();
-    isPlaying.value = false;
-    setTimeout(() => audio.value?.play(), 100);
-};
-
-const playPrev = () => {
-    const currentIndex = store.playlist.findIndex((s) => s.id === currentTrack.value?.id);
-    if (currentIndex > 0) {
-        store.setCurrentTrack(store.playlist[currentIndex - 1]);
-        isPlaying.value = false;
+const reproducirSiguiente = () => {
+    if (store.playlist.length > 0) {
+        store.playNext();
+        estaReproduciendo.value = true;
         setTimeout(() => audio.value?.play(), 100);
+    } else {
+        detenerReproduccion();
     }
 };
 
-// ✅ Asegurar que la duración se actualiza correctamente
-const setDuration = () => {
+const reproducirAnterior = () => {
+    const indiceActual = store.playlist.findIndex((s) => s.id === pistaActual.value?.id);
+    if (indiceActual > 0) {
+        store.setCurrentTrack(store.playlist[indiceActual - 1]);
+        estaReproduciendo.value = true;
+        setTimeout(() => audio.value?.play(), 100);
+    } else {
+        detenerReproduccion();
+    }
+};
+
+const establecerDuracion = () => {
     if (audio.value) {
-        duration.value = audio.value.duration;
+        duracion.value = audio.value.duration || 0;
     }
 };
 
-// ✅ Actualizar la barra de progreso
-const updateProgress = () => {
+const actualizarProgreso = () => {
+    progreso.value = audio.value?.currentTime || 0;
+};
+
+const buscarTiempo = () => {
     if (audio.value) {
-        progress.value = audio.value.currentTime;
+        audio.value.currentTime = progreso.value;
     }
 };
 
-// ✅ Buscar en la pista de audio
-const seek = () => {
+const detenerReproduccion = () => {
+    store.setCurrentTrack(null);
+    estaReproduciendo.value = false;
+    progreso.value = 0;
     if (audio.value) {
-        audio.value.currentTime = progress.value;
+        audio.value.pause();
+        audio.value.src = ""; // Limpiar la fuente de audio
     }
 };
-
-// ✅ Detectar cambios en `currentTrack`
-watch(
-    () => store.currentTrack,
-    async (newTrack) => {
-        if (newTrack && audio.value) {
-            await nextTick(); // Esperar a que la referencia del audio se actualice
-            audio.value.load();
-            audio.value.play();
-            isPlaying.value = true;
-            progress.value = 0;
-        }
-    }
-);
 
 onMounted(() => {
-    if (currentTrack.value && audio.value) {
+    if (pistaActual.value && audio.value) {
         audio.value.play();
+        estaReproduciendo.value = true;
     }
 });
 
 onUnmounted(() => {
     if (audio.value) {
         audio.value.pause();
+        audio.value.src = "";
     }
 });
 
-// ✅ Formatear tiempo en minutos:segundos
-const formatTime = (seconds) => {
-    if (!seconds) return "0:00";
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+watch(
+    () => store.pistaActual,
+    async (nuevaPista) => {
+        if (!nuevaPista) {
+            detenerReproduccion();
+            return;
+        }
+        if (audio.value) {
+            await nextTick();
+            audio.value.src = nuevaPista.preview || "";
+            if (nuevaPista.preview) {
+                audio.value.load();
+                audio.value.play();
+                estaReproduciendo.value = true;
+                progreso.value = 0;
+            } else {
+                detenerReproduccion();
+            }
+        }
+    }
+);
+const formatearTiempo = (segundos) => {
+    const min = Math.floor(segundos / 60);
+    const sec = Math.floor(segundos % 60).toString().padStart(2, "0");
     return `${min}:${sec}`;
 };
 </script>
+
+
 
 <style scoped>
 /* 🔹 Reproductor de Música */
@@ -154,7 +189,7 @@ const formatTime = (seconds) => {
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: stretch;
     padding: 10px 15px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
@@ -190,12 +225,6 @@ const formatTime = (seconds) => {
     font-size: 12px;
     margin: 0;
     color: #bbb;
-}
-
-/* 🔹 Botón de pantalla completa */
-.expand-btn {
-    display: flex;
-    align-items: center;
 }
 
 /* 🔹 Barra de progreso */
@@ -237,5 +266,49 @@ const formatTime = (seconds) => {
     color: white;
     min-width: 40px;
     text-align: center;
+}
+
+.playlist-container {
+    position: fixed;
+    bottom: 90px;
+    left: 0;
+    width: 20%;
+    min-width: 250px;
+    background: #22222293;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    border-top: 1px solid #444;
+    transition: all 0.3s ease-in-out;
+}
+
+.playlist-container h5 {
+    margin-bottom: 5px;
+    color: white;
+    text-align: center;
+}
+
+.playlist-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.playlist-container li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+}
+
+.playlist-container li:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.playlist-container li.playing {
+    font-weight: bold;
+    color: #0d6efd;
 }
 </style>
